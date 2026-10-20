@@ -1,6 +1,7 @@
 import {
   convertirCelsiusEnFahrenheit,
-  arrondirTemperature
+  arrondirTemperature,
+  lireTemperature
 } from './conversion.js';
 
 const champTemperature = document.querySelector('#temperature');
@@ -8,18 +9,24 @@ const boutonConvertir = document.querySelector('#convertir');
 const paragrapheResultat = document.querySelector('#resultat');
 
 function afficherConversion() {
-  if (champTemperature.value === '') {
-    paragrapheResultat.textContent = 'Saisis une température en Celsius.';
+  if (champTemperature.validity.badInput) {
+    paragrapheResultat.textContent = 'Ce n\'est pas un nombre valide.';
     return;
   }
 
-  const temperatureCelsius = Number(champTemperature.value);
+  const lecture = lireTemperature(champTemperature.value);
+
+  if (!lecture.valide) {
+    paragrapheResultat.textContent = lecture.erreur;
+    return;
+  }
+
   const temperatureFahrenheit = arrondirTemperature(
-    convertirCelsiusEnFahrenheit(temperatureCelsius)
+    convertirCelsiusEnFahrenheit(lecture.valeur)
   );
 
   paragrapheResultat.textContent =
-    `${temperatureCelsius} °C correspondent à ${temperatureFahrenheit} °F.`;
+    `${lecture.valeur} °C correspondent à ${temperatureFahrenheit} °F.`;
 }
 
 boutonConvertir.addEventListener('click', afficherConversion);
